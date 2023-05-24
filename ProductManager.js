@@ -55,10 +55,23 @@ class ProductManager {
     deleteProductsById = async (id) => {
         let respuesta3 = await this.readProducts();
         let productFilter = respuesta3.filter(products => products.id != id);
-        await fs.writeFile(this.patch, JSON.stringify(this.productFilter));
+        await fs.writeFile(this.patch, JSON.stringify(productFilter));
         console.log("Producto eliminado");
     };
+    
+    updateProducts = async ({id, ...producto}) => {
+    await this.deleteProductsById(id);
+    let productoId = await this.readProducts();
+   
 
+   let modProducts = [
+    { ...producto, id},
+    ...productoId
+         
+    ] 
+    await fs.writeFile(this.patch, JSON.stringify(modProducts));
+
+    };
 }
 
 const productos = new ProductManager
@@ -73,4 +86,12 @@ productos.addProduct("producto prueba3", "Este es un producto prueba", 200, "Sin
 
 //productos.getProductsById(1);
 
-productos.deleteProductsById(1);
+//productos.deleteProductsById(1);
+
+productos.updateProducts(  {title: 'producto prueba3',
+description: 'Este es un producto prueba',
+price: 400,
+thumbnail: 'Sin imagen',
+code: 'abc123',
+stock: 25,
+id: 3})
